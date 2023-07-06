@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login form</title>
+</head>
+<body>
+    <h2>Login</h2>
+    
+    <form th:action="@{/authenticateUser}" method="POST">
+        <div th:if="${param.error}">
+            Invaild username or password!
+        </div>
+
+        <div th:if="${param.logout}">
+            User logged out!
+        </div>
+        
+        <div>
+        <input type="text" name="username" placeholder="Username"/>
+        </div>
+
+        <div>
+        <input type="password" name="password" placeholder="Password"/>
+        </div>
+        <input type="submit" value="Log in" />
+    </form>
+    
+</body>
+</html>
