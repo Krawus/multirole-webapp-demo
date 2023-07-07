@@ -45,6 +45,11 @@ public class SecurityConfiguration {
         http
         .authorizeHttpRequests(authorize -> 
             authorize
+                .requestMatchers("/management/").hasAnyRole("ADMIN", "MOD")
+                .requestMatchers("/management/admin/**").hasRole("ADMIN")
+                .requestMatchers("/management/mod/**").hasRole("MOD")
+
+
                 .anyRequest().authenticated()
         )
         .formLogin(form -> 
@@ -56,6 +61,9 @@ public class SecurityConfiguration {
         .logout(logout ->
                     logout.permitAll()
         )
+        .exceptionHandling(configurer -> 
+                                    configurer.accessDeniedPage("/access-denied"))
+
         .httpBasic(Customizer.withDefaults())  // for testing without frontend
         .csrf(csrf -> csrf.disable()) // for testing without frontend
         ;

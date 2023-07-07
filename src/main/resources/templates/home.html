@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>home page</title>
-</head>
-<body>
-    <h1>Welcome to the home page </h1>
+  </head>
+  <body>
+    <h1>Welcome to the home page</h1>
 
     <form th:action="@{/logout}" method="post">
-        <input type="submit" value="Sign Out"/>
+      <input type="submit" value="Sign Out" />
     </form>
 
-    
-</body>
+    <p>
+      <a th:href="@{/management/mod}"> moderator stuff </a>
+    </p>
+    <p>
+        <a th:href="@{/management/admin}" > admin stuff </a>
+    </p>
+  </body>
 </html>
