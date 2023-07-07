@@ -1,44 +1,41 @@
 package com.krawus.multirole_website.security;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    @Bean
-    public UserDetailsService usersSetup() {
-        UserDetails user = User.builder()
-            .username("user")
-            .password("{noop}user")
-            .roles("USER")
-            .build();
+    private DataSource dataSource;
 
-        UserDetails moderator = User.builder()
-            .username("moderator")
-            .password("{noop}moderator")
-            .roles("USER", "MOD")
-            .build();
-
-        UserDetails admin = User.builder()
-            .username("admin")
-            .password("{noop}admin")
-            .roles("USER", "MOD", "ADMIN")
-            .build();
-
-        return new InMemoryUserDetailsManager(user, moderator, admin);
+    @Autowired
+    public SecurityConfiguration(DataSource dataSource){
+        this.dataSource = dataSource;
     }
 
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception{
+        auth.jdbcAuthentication()
+        .dataSource(dataSource);
+}
+
+    @Bean
+    public RoleHierarchyImpl roleHierarchy(){
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_MOD \n" 
+        + "ROLE_ADMIN > ROLE_USER\n" + "ROLE_MOD > ROLE_USER");
+        return roleHierarchy;
+    }
 
     @Bean 
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
@@ -48,8 +45,6 @@ public class SecurityConfiguration {
                 .requestMatchers("/management/").hasAnyRole("ADMIN", "MOD")
                 .requestMatchers("/management/admin/**").hasRole("ADMIN")
                 .requestMatchers("/management/mod/**").hasRole("MOD")
-
-
                 .anyRequest().authenticated()
         )
         .formLogin(form -> 
