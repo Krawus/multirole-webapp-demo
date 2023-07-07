@@ -1,5 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html
+  lang="en"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+  ,
+  xmlns:th="http://www.thymeleaf.org"
+>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,16 +12,18 @@
   </head>
   <body>
     <h1>Welcome to the home page</h1>
-
     <form th:action="@{/logout}" method="post">
       <input type="submit" value="Sign Out" />
     </form>
-
     <p>
-      <a th:href="@{/management/mod}"> moderator stuff </a>
+      <a sec:authorize="hasRole('ROLE_MOD')" th:href="@{/management/mod}">
+        moderator stuff
+      </a>
     </p>
     <p>
-        <a th:href="@{/management/admin}" > admin stuff </a>
+      <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/management/admin}">
+        admin stuff
+      </a>
     </p>
   </body>
 </html>
