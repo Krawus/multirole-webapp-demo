@@ -58,8 +58,6 @@ public class SecurityConfiguration {
         )
         .exceptionHandling(configurer -> 
                                     configurer.accessDeniedPage("/access-denied"))
-
-        .httpBasic(Customizer.withDefaults())  // for testing without frontend
         .csrf(csrf -> csrf.disable()) // for testing without frontend
         ;
         
